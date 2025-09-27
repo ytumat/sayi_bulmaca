@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>4 Basamaklı Sayı Tahmin Oyunu</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 400px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f7f7f7;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    input[type="text"] {
+      width: 100%;
+      font-size: 18px;
+      padding: 8px;
+      margin: 10px 0;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      font-size: 18px;
+      padding: 10px;
+      background: #007BFF;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #log {
+      margin-top: 20px;
+      min-height: 60px;
+      background: white;
+      padding: 10px;
+      border-radius: 4px;
+      box-shadow: inset 0 0 5px #ddd;
+      font-size: 16px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>4 Basamaklı Sayı Tahmin Oyunu</h1>
+  <p>Rakamlar aynı olabilir, fakat <strong>başta 0 olamaz</strong>.</p>
+  <input type="text" id="guessInput" maxlength="4" placeholder="4 basamaklı sayı girin" autofocus />
+  <button id="guessBtn">Tahmin Et</button>
+  <div id="log"></div>
+
+  <script>
+    function generateNumber() {
+      let number = '';
+      number += Math.floor(Math.random() * 9 + 1); // İlk basamak 1–9
+      for (let i = 0; i < 3; i++) {
+        number += Math.floor(Math.random() * 10); // Diğerleri 0–9
+      }
+      return number;
+    }
+
+    function compareGuess(guess, secret) {
+      let bulls = 0;
+      let cows = 0;
+
+      const guessUsed = [false, false, false, false];
+      const secretUsed = [false, false, false, false];
+
+      for (let i = 0; i < 4; i++) {
+        if (guess[i] === secret[i]) {
+          bulls++;
+          guessUsed[i] = true;
+          secretUsed[i] = true;
+        }
+      }
+
+      for (let i = 0; i < 4; i++) {
+        if (guessUsed[i]) continue;
+        for (let j = 0; j < 4; j++) {
+          if (secretUsed[j]) continue;
+          if (guess[i] === secret[j]) {
+            cows++;
+            guessUsed[i] = true;
+            secretUsed[j] = true;
+            break;
+          }
+        }
+      }
+
+      return { bulls, cows };
+    }
+
+    const secretNumber = generateNumber();
+    let attempts = 0;
+    const log = document.getElementById('log');
+    const input = document.getElementById('guessInput');
+    const button = document.getElementById('guessBtn');
+
+    button.addEventListener('click', () => {
+      const guess = input.value.trim();
+
+      if (guess.length !== 4 || !/^\d{4}$/.test(guess)) {
+        alert("Lütfen 4 basamaklı bir sayı girin.");
+        return;
+      }
+
+      if (guess[0] === '0') {
+        alert("Sayı 0 ile başlayamaz.");
+        return;
+      }
+
+      attempts++;
+      const { bulls, cows } = compareGuess(guess, secretNumber);
+
+      log.textContent += `Tahmin ${attempts}: ${guess} → ${bulls} +, ${cows} - \n`;
+
+      if (bulls === 4) {
+        alert(`🎉 Tebrikler! ${attempts}. denemede doğru sayıyı buldunuz: ${secretNumber}`);
+        input.disabled = true;
+        button.disabled = true;
+      }
+
+      input.value = '';
+      input.focus();
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        button.click();
+      }
+    });
+  </script>
+</body>
+</html>
