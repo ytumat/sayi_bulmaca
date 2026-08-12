@@ -1,13 +1,14 @@
 {
   "name": "Sayı Tahmin Oyunu",
   "short_name": "Sayı BUL",
-  "start_url": "./",
+  "start_url": "/sayi_bulmaca/",
+  "scope": "/sayi_bulmaca/",
   "display": "standalone",
   "background_color": "#f7f7f7",
   "theme_color": "#007BFF",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "/sayi_bulmaca/icon.png",
       "sizes": "192x192",
       "type": "image/png"
     }

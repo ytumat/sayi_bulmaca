@@ -1,14 +1,14 @@
-const CACHE_NAME = 'sayi-tahmin-v1'; // Versiyonu artırarak her güncellemede taze kalmasını sağlar
+const CACHE_NAME = 'sayi-tahmin-v2';
 const assets = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon.png' 
+  '/sayi_bulmaca/',
+  '/sayi_bulmaca/index.html',
+  '/sayi_bulmaca/manifest.json',
+  '/sayi_bulmaca/icon.png'
 ];
 
 // Kurulum aşaması
 self.addEventListener('install', (e) => {
-  self.skipWaiting(); // Yeni versiyonun hemen aktif olmasını sağlar
+  self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(assets);

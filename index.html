@@ -253,13 +253,15 @@
     });
 
     // PWA Service Worker Kaydı
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(() => console.log("Service Worker Kaydedildi!"))
-          .catch((err) => console.log("Service Worker Kayıt Hatası:", err));
-      });
-    }
+    
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sayi_bulmaca/sw.js')
+      .then(() => console.log("Service Worker Kaydedildi!"))
+      .catch((err) => console.log("Service Worker Kayıt Hatası:", err));
+  });
+}
+
   </script>
 </body>
 </html>
