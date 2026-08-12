@@ -1,9 +1,9 @@
-const CACHE_NAME = 'sayi-tahmin-v2';
+const CACHE_NAME = 'sayi-tahmin-v3';
 const assets = [
   '/sayi_bulmaca/',
   '/sayi_bulmaca/index.html',
   '/sayi_bulmaca/manifest.json',
-  '/sayi_bulmaca/icon1.png'
+  '/sayi_bulmaca/iconn.png'
 ];
 
 // Kurulum aşaması
