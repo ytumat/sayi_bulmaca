@@ -2,7 +2,8 @@ const CACHE_NAME = 'sayi-tahmin-v1'; // Versiyonu artırarak her güncellemede t
 const assets = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './icon.png' 
 ];
 
 // Kurulum aşaması
