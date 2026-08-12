@@ -4,6 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4 Basamaklı Sayı Tahmin Oyunu</title>
+  
+  <!-- Mobil uygulama görünümü ve tema rengi ayarları -->
+  <meta name="theme-color" content="#007BFF" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -101,7 +108,7 @@
     .badges {
       display: flex;
       gap: 4px;
-      justify-content: flex-start; /* Kutucuklar sola yaslı */
+      justify-content: flex-start;
     }
     .badge {
       width: 22px;
@@ -120,7 +127,7 @@
     .badge-minus {
       background: #ffc107;
       color: #333;
-      font-size: 18px; /* Eksi işaretinin daha uzun görünmesi için font büyütüldü */
+      font-size: 18px;
     }
     .badge-zero {
       width: auto;
@@ -130,6 +137,9 @@
       font-size: 13px;
     }
   </style>
+
+  <!-- PWA Manifest Tanımı -->
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
   <div class="container">
@@ -241,6 +251,15 @@
         button.click();
       }
     });
+
+    // PWA Service Worker Kaydı
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(() => console.log("Service Worker Kaydedildi!"))
+          .catch((err) => console.log("Service Worker Kayıt Hatası:", err));
+      });
+    }
   </script>
 </body>
 </html>
