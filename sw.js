@@ -3,7 +3,7 @@ const assets = [
   '/sayi_bulmaca/',
   '/sayi_bulmaca/index.html',
   '/sayi_bulmaca/manifest.json',
-  '/sayi_bulmaca/icon.png'
+  '/sayi_bulmaca/icon1.png'
 ];
 
 // Kurulum aşaması
