@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>4 Basamaklı Sayı Tahmin Oyunu</title>
   
   <!-- Mobil uygulama görünümü ve tema rengi ayarları -->
@@ -12,9 +12,15 @@
   <link rel="apple-touch-icon" href="iconn.png">
 
   <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
     body {
       font-family: Arial, sans-serif;
-      max-width: 400px;
+      max-width: 420px;
       width: 100%;
       margin: 0 auto;
       padding: 15px;
@@ -22,34 +28,67 @@
       background: #f7f7f7;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
-      justify-content: center;
     }
     .container {
       background: white;
-      padding: 20px;
+      padding: 15px;
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      box-sizing: border-box;
     }
     h1 {
       text-align: center;
-      color: #333;
+      color: #2c3e50;
+      /* Şık, modern ve havalı tipografi yığını */
+      font-family: "Georgia", "Cambria", "Times New Roman", Times, serif;
       font-size: 1.5rem;
-      margin-top: 0;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      margin: 0 0 10px 0;
+      transition: all 0.3s ease;
+    }
+    .intro-section {
+      transition: all 0.3s ease;
+      overflow: hidden;
     }
     p {
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       text-align: center;
       color: #666;
+      margin: 0 0 8px 0;
+    }
+    .help-box {
+      font-size: 0.75rem;
+      color: #555;
+      background: #f1f3f5;
+      padding: 8px 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      text-align: left;
+      line-height: 1.5;
+    }
+    .help-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 3px;
+    }
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
     }
     input[type="text"] {
-      width: 100%;
-      font-size: 22px;
-      padding: 12px;
-      margin: 10px 0;
+      flex: 1;
+      min-width: 0;
+      font-size: 20px;
+      padding: 10px;
       box-sizing: border-box;
       text-align: center;
-      letter-spacing: 4px;
+      letter-spacing: 3px;
       border: 2px solid #ddd;
       border-radius: 6px;
       outline: none;
@@ -59,9 +98,8 @@
       border-color: #007BFF;
     }
     button {
-      width: 100%;
-      font-size: 18px;
-      padding: 12px;
+      font-size: 15px;
+      padding: 10px 12px;
       background: #007BFF;
       border: none;
       color: white;
@@ -69,13 +107,13 @@
       cursor: pointer;
       font-weight: bold;
       transition: background 0.2s;
+      flex-shrink: 0;
     }
     button:hover {
       background: #0056b3;
     }
     #log {
-      margin-top: 20px;
-      max-height: 220px;
+      flex: 1;
       overflow-y: auto;
       background: #fafafa;
       padding: 10px;
@@ -84,6 +122,7 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      overscroll-behavior-y: contain;
     }
     .log-item {
       display: grid;
@@ -121,13 +160,18 @@
       font-weight: bold;
       color: white;
     }
+    .badge-sm {
+      width: 18px;
+      height: 18px;
+      font-size: 11px;
+    }
     .badge-plus {
       background: #28a745;
     }
     .badge-minus {
       background: #ffc107;
       color: #333;
-      font-size: 18px;
+      font-size: 15px;
     }
     .badge-zero {
       width: auto;
@@ -136,6 +180,13 @@
       color: #666;
       font-size: 13px;
     }
+    .win-message {
+      text-align: center;
+      color: #28a745;
+      font-weight: bold;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
   </style>
 
   <!-- PWA Manifest Tanımı -->
@@ -143,16 +194,46 @@
 </head>
 <body>
   <div class="container">
-    <h1>4 Basamaklı Sayı Tahmin Oyunu</h1>
-    <p>Rakamlar aynı olabilir, fakat <strong>başta 0 olamaz</strong>.</p>
+    <h1>Sayı Tahmin Oyunu</h1>
     
-    <input type="text" id="guessInput" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="----" autofocus />
-    
-    <button id="guessBtn">Tahmin Et</button>
+    <div class="intro-section" id="introSection">
+      <p>4 basamaklı sayıyı tahmin et. <strong>0 başta olamaz.</strong></p>
+      
+      <div class="help-box">
+        💡 <strong>Örnek (Gizli Sayı: 1234):</strong>
+        <div class="help-row">
+          <span>• <strong>3267</strong> için:</span>
+          <span class="badge badge-sm badge-plus">+</span>
+          <span class="badge badge-sm badge-minus">−</span>
+          <span style="color:#666; font-size:11px;">(2 doğru yerde, 3 yanlış yerde)</span>
+        </div>
+        <div class="help-row">
+          <span>• <strong>1782</strong> için:</span>
+          <span class="badge badge-sm badge-plus">+</span>
+          <span class="badge badge-sm badge-minus">−</span>
+          <span style="color:#666; font-size:11px;">(1 doğru yerde, 2 yanlış yerde)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-group" id="inputArea">
+      <input type="text" id="guessInput" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="----" autofocus />
+      <button id="guessBtn">Tahmin Et</button>
+    </div>
+
     <div id="log"></div>
   </div>
 
   <script>
+    let secretNumber = generateNumber();
+    let attempts = 0;
+    
+    const log = document.getElementById('log');
+    const input = document.getElementById('guessInput');
+    const button = document.getElementById('guessBtn');
+    const inputArea = document.getElementById('inputArea');
+    const introSection = document.getElementById('introSection');
+
     function generateNumber() {
       let number = '';
       number += Math.floor(Math.random() * 9 + 1); 
@@ -193,13 +274,7 @@
       return { bulls, cows };
     }
 
-    const secretNumber = generateNumber();
-    let attempts = 0;
-    const log = document.getElementById('log');
-    const input = document.getElementById('guessInput');
-    const button = document.getElementById('guessBtn');
-
-    button.addEventListener('click', () => {
+    function handleGuess() {
       const guess = input.value.trim();
 
       if (guess.length !== 4 || !/^\d{4}$/.test(guess)) {
@@ -210,6 +285,10 @@
       if (guess[0] === '0') {
         alert("Sayı 0 ile başlayamaz.");
         return;
+      }
+
+      if (attempts === 0) {
+        introSection.style.display = 'none';
       }
 
       attempts++;
@@ -237,31 +316,55 @@
       log.scrollTop = log.scrollHeight;
 
       if (bulls === 4) {
-        alert(`🎉 Tebrikler! ${attempts}. denemede doğru sayıyı buldunuz: ${secretNumber}`);
-        input.disabled = true;
-        button.disabled = true;
+        inputArea.style.display = 'none';
+        
+        const winDiv = document.createElement('div');
+        winDiv.innerHTML = `
+          <div class="win-message">🎉 Tebrikler! ${attempts}. denemede buldunuz: ${secretNumber}</div>
+          <button id="restartBtn" style="width:100%; margin-bottom: 10px;">Yeniden Başlat</button>
+        `;
+        inputArea.parentNode.insertBefore(winDiv, log);
+
+        document.getElementById('restartBtn').addEventListener('click', resetGame);
       }
 
       input.value = '';
       input.focus();
-    });
+    }
+
+    button.addEventListener('click', handleGuess);
 
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
-        button.click();
+        handleGuess();
       }
     });
 
-    // PWA Service Worker Kaydı
-    
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sayi_bulmaca/sw.js')
-      .then(() => console.log("Service Worker Kaydedildi!"))
-      .catch((err) => console.log("Service Worker Kayıt Hatası:", err));
-  });
-}
+    function resetGame() {
+      secretNumber = generateNumber();
+      attempts = 0;
+      log.innerHTML = '';
+      
+      introSection.style.display = 'block';
 
+      const winMsg = document.querySelector('.win-message');
+      const restartBtn = document.getElementById('restartBtn');
+      if (winMsg) winMsg.remove();
+      if (restartBtn) restartBtn.remove();
+      
+      inputArea.style.display = 'flex';
+      input.value = '';
+      input.focus();
+    }
+
+    // PWA Service Worker Kaydı
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sayi_bulmaca/sw.js')
+          .then(() => console.log("Service Worker Kaydedildi!"))
+          .catch((err) => console.log("Service Worker Kayıt Hatası:", err));
+      });
+    }
   </script>
 </body>
 </html>
