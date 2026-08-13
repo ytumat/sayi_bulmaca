@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sayi-tahmin-v5';
+const CACHE_NAME = 'sayi-tahmin-v6';
 const assets = [
   '/sayi_bulmaca/',
   '/sayi_bulmaca/index.html',

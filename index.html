@@ -39,16 +39,34 @@
       height: 100%;
       box-sizing: border-box;
     }
+    .header-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
     h1 {
       text-align: center;
       color: #2c3e50;
-      /* Şık, modern ve havalı tipografi yığını */
       font-family: "Georgia", "Cambria", "Times New Roman", Times, serif;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 700;
       letter-spacing: 0.8px;
-      margin: 0 0 10px 0;
-      transition: all 0.3s ease;
+      margin: 0;
+      flex: 1;
+    }
+    .new-game-icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 4px;
+      border-radius: 4px;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .new-game-icon-btn:hover {
+      background: #f1f3f5;
     }
     .intro-section {
       transition: all 0.3s ease;
@@ -194,7 +212,11 @@
 </head>
 <body>
   <div class="container">
-    <h1>Sayı Tahmin Oyunu</h1>
+    <div class="header-group">
+      <h1>Sayı Tahmin Oyunu</h1>
+      <!-- Sağ üst köşeye şık ve sade bir yeniden başlat / vazgeç butonu (ikon) -->
+      <button class="new-game-icon-btn" id="headerResetBtn" title="Yeni Sayı / Vazgeç">🔄</button>
+    </div>
     
     <div class="intro-section" id="introSection">
       <p>4 basamaklı sayıyı tahmin et. <strong>0 başta olamaz.</strong></p>
@@ -213,12 +235,19 @@
           <span class="badge badge-sm badge-minus">−</span>
           <span style="color:#666; font-size:11px;">(1 doğru yerde, 2 yanlış yerde)</span>
         </div>
-       <div class="help-row">
+        <div class="help-row">
           <span>• <strong>1722</strong> için:</span>
           <span class="badge badge-sm badge-plus">+</span>
           <span class="badge badge-sm badge-minus">−</span>
           <span style="color:#666; font-size:11px;">(1 doğru yerde, 2 yanlış yerde)</span>
         </div>
+<div class="help-row">
+          <span>• <strong>1222</strong> için:</span>
+          <span class="badge badge-sm badge-plus">+</span>
+         <span class="badge badge-sm badge-plus">+</span>
+          <span style="color:#666; font-size:11px;">(1 ve 2 doğru yerde)</span>
+        </div>
+
       </div>
     </div>
 
@@ -239,6 +268,7 @@
     const button = document.getElementById('guessBtn');
     const inputArea = document.getElementById('inputArea');
     const introSection = document.getElementById('introSection');
+    const headerResetBtn = document.getElementById('headerResetBtn');
 
     function generateNumber() {
       let number = '';
@@ -325,6 +355,7 @@
         inputArea.style.display = 'none';
         
         const winDiv = document.createElement('div');
+        winDiv.className = 'win-container';
         winDiv.innerHTML = `
           <div class="win-message">🎉 Tebrikler! ${attempts}. denemede buldunuz: ${secretNumber}</div>
           <button id="restartBtn" style="width:100%; margin-bottom: 10px;">Yeniden Başlat</button>
@@ -346,6 +377,15 @@
       }
     });
 
+    headerResetBtn.addEventListener('click', () => {
+      if (attempts > 0 && !document.getElementById('restartBtn')) {
+        if (!confirm("Mevcut oyunu bırakıp yeni sayıya geçmek istiyor musunuz?")) {
+          return;
+        }
+      }
+      resetGame();
+    });
+
     function resetGame() {
       secretNumber = generateNumber();
       attempts = 0;
@@ -353,10 +393,8 @@
       
       introSection.style.display = 'block';
 
-      const winMsg = document.querySelector('.win-message');
-      const restartBtn = document.getElementById('restartBtn');
+      const winMsg = document.querySelector('.win-container');
       if (winMsg) winMsg.remove();
-      if (restartBtn) restartBtn.remove();
       
       inputArea.style.display = 'flex';
       input.value = '';
